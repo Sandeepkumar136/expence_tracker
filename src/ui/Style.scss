@@ -1,0 +1,98 @@
+%typeClassicFont {
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+%type-robboto-font {
+  font-family: "TikTok Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "wdth" 100;
+  transition: 0.2s all ease-in;
+}
+%typeExcessiveFont {
+  font-family: "Bitcount Prop Single", system-ui;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "CRSV" 0.5, "ELSH" 0, "ELXP" 0;
+}
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  @extend %type-robboto-font;
+}
+
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+
+  background-color: #000;
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  border-right: 1px solid #262626;
+}
+
+/* Logo */
+.logo-contain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.nav-logo {
+  width: 35px;
+}
+
+.nt-nav-logo {
+  font-size: 20px;
+  font-weight: 600;
+}
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+/* Icon */
+.nav-item i {
+  font-size: 22px;
+}
+.ni-t{
+  opacity: 0.7;
+}
+
+/* Hover */
+.nav-item:hover {
+  background-color: #1a1a1a;
+}
+
+/* Active */
+.nav-item.active {
+  background-color: #262626;
+}
