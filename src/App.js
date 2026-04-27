@@ -11,6 +11,7 @@ import Settings from "./components/Settings";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Login from "./Pages/Login";
+import { DarkModeProvider } from "./context/DarkModeContext";
 
 const Layout = ({ children }) => (
   <>
@@ -22,6 +23,7 @@ const Layout = ({ children }) => (
 const App = () => {
   return (
     <Router>
+      <DarkModeProvider>        
       <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
@@ -58,7 +60,7 @@ const App = () => {
               </Layout>
             </ProtectedRoute>
           }
-        />
+          />
 
         <Route
           path="/settings"
@@ -69,11 +71,12 @@ const App = () => {
               </Layout>
             </ProtectedRoute>
           }
-        />
+          />
 
         {/* ✅ Proper fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+          </DarkModeProvider>
     </Router>
   );
 };
