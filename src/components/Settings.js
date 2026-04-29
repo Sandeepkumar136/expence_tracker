@@ -42,13 +42,13 @@ const Settings = () => {
           </div>
           <p className="s-th-txt">Automatic is only supported on operating systems that allow you to control the system-wide color scheme.</p>
           </div>
-          <div className="s-th-contain">
-            <button onClick={handleLogout} className="s-btn"><i class="s-th-ic bx bx-arrow-out-right-square-half" /> Logout</button>
+          <div className="s-th-contain-l">
+            <button onClick={handleLogout} className="s-btn-l"><i class="s-th-ic bx bx-arrow-out-right-square-half" /> Logout</button>
           </div>
         </div>
-        <div className="s-contain">
-          <h4 className="s-v-in"><i className="s-v-ic bx bx-git-compare"></i>54.0 Client SDK</h4>
-          <h4 className="s-v-in"><i className="s-v-ic bx bx-info-circle"></i> Version info</h4>
+        <div className="s-contain-v">
+          <h4 className="s-v-in"><i className="s-v-ic bx bx-git-compare"></i><span className="s-v-t">54.0 Client SDK</span></h4>
+          <h4 className="s-v-in"><i className="s-v-ic bx bx-info-circle"></i> <span className="s-v-t">Version info</span></h4>
         </div>
       </div>
     </div>

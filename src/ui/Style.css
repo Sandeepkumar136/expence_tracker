@@ -133,16 +133,16 @@
 
 /* ================= Setting UI/UX==================*/
 .s-container {
-  border: 2px solid #000;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
 .s-contain-u {
-  border: 2px solid #000;
   width: -moz-fit-content;
   width: fit-content;
+  outline: 0.2px solid #999;
+  background-color: #f1f1f1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -151,6 +151,10 @@
   width: 100%;
   height: 300px;
   padding: 0.5rem;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 
 .s-icon {
@@ -173,13 +177,14 @@
 }
 
 .s-contain-s {
-  border: 2px solid #000;
   padding: 1rem;
   display: flex;
   justify-content: start;
   align-items: start;
   flex-direction: column;
   gap: 1rem;
+  outline: 0.2px solid #999;
+  background-color: #f1f1f1;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -188,7 +193,6 @@
 }
 
 .s-th-contain {
-  border: 2px solid #000;
   padding: 1rem;
   border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -202,7 +206,6 @@
 }
 
 .s-btn-c {
-  border: 2px solid #000;
   display: flex;
   justify-content: start;
   align-items: start;
@@ -213,13 +216,19 @@
 .s-btn {
   border: none;
   outline: none;
-  background-color: #c5c5c5;
+  background-color: #030303;
   width: 100px;
   display: flex;
+  color: #ddd;
   justify-content: start;
   align-items: center;
-  padding: 0.3rem 0.5rem;
+  padding: 0.4rem 0.6rem;
   gap: 0.2rem;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
 }
 
 .s-th-ic {
@@ -233,4 +242,57 @@
 .s-th-txt {
   font-size: 0.7rem;
   opacity: 0.8;
+  margin-top: 0.2rem;
+}
+
+.s-btn-l {
+  border: none;
+  outline: none;
+  font-size: 0.9;
+  background-color: #ff3030;
+  width: 100px;
+  display: flex;
+  color: #fff;
+  justify-content: start;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  gap: 0.2rem;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.s-contain-v {
+  outline: 0.2px solid #999;
+  background-color: #f1f1f1;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.s-v-in {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  outline: none;
+}
+
+.s-v-ic {
+  font-size: 1.4rem;
+}
+
+.s-v-t {
+  font-size: 0.8rem;
 }/*# sourceMappingURL=Style.css.map */
