@@ -5,12 +5,20 @@ import { ID } from "appwrite";
 const DATABASE_ID = "69e8d8b30039451280c9";
 const COLLECTION_ID = "accounts";
 
-const AddAccount = () => {
+const AddAccount = ({ refreshAccounts }) => {
   const [name, setName] = useState("");
   const [balance, setBalance] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name || !balance) {
+      alert("Fill all fields");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       await databases.createDocument(
@@ -19,28 +27,30 @@ const AddAccount = () => {
         ID.unique(),
         {
           name,
-          balance: Number(balance)
+          balance: Number(balance),
         }
       );
-
-      alert("Account Created ✅");
 
       setName("");
       setBalance("");
 
+      refreshAccounts(); // 🔥 auto refresh
+
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className="account-card">
       <h2>Add Account</h2>
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Account Name (Cash / Bank)"
+          placeholder="Account Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -52,7 +62,9 @@ const AddAccount = () => {
           onChange={(e) => setBalance(e.target.value)}
         />
 
-        <button type="submit">Create</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Create Account"}
+        </button>
       </form>
     </div>
   );

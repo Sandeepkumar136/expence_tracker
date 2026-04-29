@@ -10,7 +10,7 @@ const Navbar = () => {
   };
 
   return (
-    <div onClick={handleCollapse} className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
+    <div className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
       
       {/* Logo */}
       <div className="logo-contain">
@@ -20,6 +20,9 @@ const Navbar = () => {
 
       {/* Navigation */}
       <ul className="nav-list">
+        <li onClick={handleCollapse} className="nav-item">
+          <i className={`bx ${isOpen ? "bx-x": "bx-menu"}`}></i>
+        </li>
         <li>
           <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
             <i className="bx bx-wallet"></i>

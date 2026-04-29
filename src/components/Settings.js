@@ -1,56 +1,107 @@
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../appwrite/auth";
 import { AuthContext } from "../context/AuthContext";
 import { ProfileContext } from "../context/ProfileContext";
 import { useDarkMode } from "../context/DarkModeContext";
+import LoadingBar from "react-top-loading-bar";
+import { ThreeDots } from "react-loader-spinner";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
-  const { name, email, phone, role } = useContext(ProfileContext);
-  const {theme, setTheme} = useDarkMode();
+  const { name, email, phone } = useContext(ProfileContext);
+  const { theme, setTheme } = useDarkMode();
+
+  const [loading, setLoading] = useState(false);
+  const loadingBarRef = useRef(null);
 
   const handleLogout = async () => {
     try {
-      await logout();       // 🔐 destroy session
-      setUser(null);        // 🧹 clear state
-      navigate("/login");   // 🔁 redirect
+      setLoading(true);
+      loadingBarRef.current.continuousStart(); // 🔥 start bar
+
+      await logout();
+      setUser(null);
+
+      loadingBarRef.current.complete(); // 🔥 stop bar
+      navigate("/login");
+
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <div className="s-container">
-        <div className="s-contain-u">
-          <i className="bx bx-user s-icon"></i>
-          <h3 className="s-us-n">{name}</h3>
-          <h3 className="s-us-e">{email}</h3>
-          <h3 className="s-us-p">{phone}</h3>
-        </div>
-        <div className="s-contain-s">
-          <div className="s-th-contain">
-          <p className="s-th-nm">
-            Theme
-          </p>
-          <div className="s-btn-c">
-            <button onClick={() => setTheme("light")} className="s-btn"><i className="s-th-ic bx bx-sun"></i><span className="btn-th-t">Light</span></button>
-            <button onClick={() => setTheme("dark")} className="s-btn"><i className="s-th-ic bx bx-moon-star" /><span className="btn-th-t">Dark</span></button>
-            <button onClick={() => setTheme("system")} className="s-btn"><i className="s-th-ic bx bx-laptop"></i><span className="btn-th-t">System</span></button>
-          </div>
-          <p className="s-th-txt">Automatic is only supported on operating systems that allow you to control the system-wide color scheme.</p>
-          </div>
-          <div className="s-th-contain-l">
-            <button onClick={handleLogout} className="s-btn-l"><i class="s-th-ic bx bx-arrow-out-right-square-half" /> Logout</button>
-          </div>
-        </div>
-        <div className="s-contain-v">
-          <h4 className="s-v-in"><i className="s-v-ic bx bx-git-compare"></i><span className="s-v-t">54.0 Client SDK</span></h4>
-          <h4 className="s-v-in"><i className="s-v-ic bx bx-info-circle"></i> <span className="s-v-t">Version info</span></h4>
-        </div>
+    <div className="settings-container">
+
+      {/* 🔝 TOP LOADING BAR */}
+      <LoadingBar color="#6366f1" ref={loadingBarRef} height={3} />
+
+      {/* PROFILE CARD */}
+      <div className="settings-card profile-card">
+        <i className="bx bx-user settings-avatar"></i>
+        <h3>{name}</h3>
+        <p>{email}</p>
+        <p>{phone}</p>
       </div>
+
+      {/* THEME CARD */}
+      <div className="settings-card">
+        <h3 className="section-title">Theme</h3>
+
+        <div className="theme-buttons">
+          <button
+            className={`theme-btn ${theme === "light" ? "active" : ""}`}
+            onClick={() => setTheme("light")}
+          >
+            <i className="bx bx-sun"></i>
+            Light
+          </button>
+
+          <button
+            className={`theme-btn ${theme === "dark" ? "active" : ""}`}
+            onClick={() => setTheme("dark")}
+          >
+            <i className="bx bx-moon"></i>
+            Dark
+          </button>
+
+          <button
+            className={`theme-btn ${theme === "system" ? "active" : ""}`}
+            onClick={() => setTheme("system")}
+          >
+            <i className="bx bx-laptop"></i>
+            System
+          </button>
+        </div>
+
+        <p className="theme-info">
+          System mode follows your OS theme.
+        </p>
+      </div>
+
+      {/* LOGOUT CARD */}
+      <div className="settings-card">
+        <button className="logout-btn" onClick={handleLogout} disabled={loading}>
+          {loading ? (
+            <ThreeDots height="20" width="40" color="#fff" />
+          ) : (
+            <>
+              <i className="bx bx-log-out"></i> Logout
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* VERSION CARD */}
+      <div className="settings-card version-card">
+        <p><i className="bx bx-git-compare"></i> SDK 54.0</p>
+        <p><i className="bx bx-info-circle"></i> Version Info</p>
+      </div>
+
     </div>
   );
 };
