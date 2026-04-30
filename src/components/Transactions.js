@@ -3,6 +3,7 @@ import { databases } from "../appwrite/config";
 import { ID } from "appwrite";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
 const ACCOUNTS_COLLECTION = "accounts";
@@ -109,8 +110,8 @@ const Transactions = () => {
         { balance: newBalance }
       );
 
-      alert("Transaction Added ✅");
-
+      toast.success("Transaction added");
+    
       setAmount("");
       setCategory("");
       setNote("");

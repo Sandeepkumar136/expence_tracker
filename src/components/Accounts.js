@@ -3,6 +3,7 @@ import { databases } from "../appwrite/config";
 import AddAccount from "./AddAccount";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
 const COLLECTION_ID = "accounts";
@@ -55,7 +56,7 @@ const Accounts = () => {
             />
           </div>
         ) : accounts.length === 0 ? (
-          <p className="center-text">No accounts found</p>
+          toast.info("Please add an account.")
         ) : (
           <div className="account-grid">
             {accounts.map((acc) => (
@@ -70,8 +71,10 @@ const Accounts = () => {
                   ></i>
                 </div>
                 <div>
-                  <h3>{acc.name}</h3>
+                  <div className="account-details">
+                    <h3>{acc.name}</h3>
                   <p>₹{acc.balance}</p>
+                  </div>
                 </div>
               </div>
             ))}

@@ -6,6 +6,7 @@ import { ProfileContext } from "../context/ProfileContext";
 import { useDarkMode } from "../context/DarkModeContext";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Settings = () => {
       navigate("/login");
 
     } catch (error) {
-      console.error("Logout failed:", error);
+      toast.error("Logout failed.");
     } finally {
       setLoading(false);
     }

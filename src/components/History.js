@@ -3,6 +3,7 @@ import { databases } from "../appwrite/config";
 import { Query } from "appwrite";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
+import { toast } from "react-toastify";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
 const COLLECTION_ID = "transactions";
@@ -84,7 +85,7 @@ const History = () => {
           <ThreeDots height="60" width="60" color="#6366f1" />
         </div>
       ) : Object.keys(grouped).length === 0 ? (
-        <p className="empty-text">No transactions found</p>
+        toast.info("Please add a transaction.")
       ) : (
         Object.keys(grouped).map((month) => (
           <div key={month} className="month-section">
