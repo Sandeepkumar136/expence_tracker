@@ -90,7 +90,7 @@ const Navbar = () => {
             <NavLink
               to="/transactions"
               className={({ isActive }) =>
-                isActive ? "m-nav-item active" : "nav-item"
+                isActive ? "m-nav-item active" : "m-nav-item"
               }
             >
               <i className="bx bx-swap-vertical"></i>

@@ -84,7 +84,7 @@
 }
 
 /* ================= Logo ================= */
-.logo-contain {
+.m-nav-item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -773,22 +773,25 @@
   justify-content: space-around;
   align-items: center;
   list-style: none;
+  border: 2px solid #000;
 }
-.m-nav-item {
+ .m-nav-item {
   display: flex;
-  cursor: pointer;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
-  padding: 10px;
-  text-decoration: none;
-  color: #111;
-  font-size: 0.8rem;
-  font-weight: 300;
-  transition: all 0.2s ease;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
+  height: 50px; /* 🔥 important */
+  width: 50px;  /* optional for perfect circle */
+  padding: 0;   /* remove extra padding */
+  background-color: transparent !important;
+}
+
+.m-nav-item:active,
+.m-nav-item:visited,
+.m-nav-item:focus {
+  background-color: transparent !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  /*<–THISisthetrueslayer*/-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 .m-nav-item i {
   font-size: 25px;
@@ -826,20 +829,17 @@
     align-items: start;
     flex-direction: column;
     // background-color: #a5b4fc;
+    grid-template-columns: none;
   }
   .account-item{
     padding: 0.8rem;
-    width: 100%;
-  }
+    width: 100%;  }
   .account-icon{
     display: flex;
     justify-content: start;
     align-items: center;
-    width: fit-content;
-  }
-  .account-details{
-    border: 2px solid #000;
-    width: 200px;
+    width: fit-content;  }
+  .account-details{    width: 100%;
     display: flex;
     width: fit-content;
     gap: 1rem;
@@ -847,5 +847,17 @@
     align-items: center;
     // gap: 5rem;
   }
-  // RESOLVE THIS
+  .account-details h3{
+    font-size: 0.9rem ;
+    font-weight: 650;
+  }
+  .account-details p{
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: #000000;
+  }
+  .account-card.inp{
+    margin-bottom: 4rem;
+  }
 }
+

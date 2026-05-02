@@ -44,7 +44,7 @@ const AddAccount = ({ refreshAccounts }) => {
   };
 
   return (
-    <div className="account-card">
+    <div className="account-card inp">
       <h2>Add Account</h2>
 
       <form onSubmit={handleSubmit}>
