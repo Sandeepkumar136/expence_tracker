@@ -66,6 +66,27 @@
 }
 
 /* ================= Logo ================= */
+.logo-contain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.nav-logo {
+  width: 30px;
+  height: 30px;
+}
+
+.nt-nav-logo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
 .m-nav-item {
   display: flex;
   align-items: center;
@@ -461,15 +482,24 @@
   cursor: pointer;
 }
 
+.selected:active,
+.selected:visited,
+.selected:focus {
+  background-color: #f9fafb !important;
+  outline: none;
+  -webkit-tap-highlight-color: #f9fafb; /* <– THIS is the true slayer */
+  -webkit-tap-highlight-color: #f9fafb;
+}
+
 .options {
   position: absolute;
   width: 100%;
-  background: white;
+  background: #fff;
   border-radius: 10px;
   margin-top: 5px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  z-index: 10;
+  z-index: 111;
 }
 
 .options div {
@@ -543,6 +573,15 @@
   transition: 0.2s;
 }
 
+.history-item:active,
+.history-item:visited,
+.history-item:focus {
+  background-color: transparent !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* <– THIS is the true slayer */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
 .history-item:hover {
   transform: scale(1.005);
   -webkit-transform: scale(1.005);
@@ -566,6 +605,10 @@
 .history-info {
   flex: 1;
   margin-left: 10px;
+}
+
+.history-info span {
+  font-size: 0.8rem;
 }
 
 .history-name {
@@ -755,7 +798,7 @@
   background: rgba(255, 255, 255, 0.852);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  padding: 0.5rem;
+  padding: 0.8rem;
 }
 
 .m-nav-list {
@@ -763,17 +806,20 @@
   justify-content: space-around;
   align-items: center;
   list-style: none;
-  border: 2px solid #000;
+  height: -moz-fit-content;
+  height: fit-content;
 }
 
 .m-nav-item {
+  text-decoration: none;
+  height: -moz-fit-content;
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px; /* 🔥 important */
-  width: 50px; /* optional for perfect circle */
-  padding: 0; /* remove extra padding */
   background-color: transparent !important;
+  color: #000;
+  margin: auto;
 }
 
 .m-nav-item:active,
@@ -781,15 +827,13 @@
 .m-nav-item:focus {
   background-color: transparent !important;
   outline: none;
-  -webkit-tap-highlight-color: transparent;
-  /*<–THISisthetrueslayer*/
+  -webkit-tap-highlight-color: transparent; /* <– THIS is the true slayer */
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .m-nav-item i {
-  font-size: 25px;
-  min-width: 22px;
   text-align: center;
+  font-size: 1.8rem;
 }
 
 .m-nav-item:hover {
@@ -856,5 +900,38 @@
   }
   .account-card.inp {
     margin-bottom: 4rem;
+  }
+  .transaction-container {
+    padding: 20px;
+    align-items: start;
+  }
+  .transaction-card {
+    max-width: 100%;
+    margin-top: 3rem;
+  }
+  .transaction-card h2 {
+    font-size: 1.1rem;
+  }
+  .transaction-card input,
+  .transaction-card select {
+    font-size: 0.8rem;
+  }
+  .custom-select {
+    font-size: 0.9rem;
+    opacity: 1;
+  }
+  .history-container {
+    padding-bottom: 3.5rem;
+  }
+  .history-header h2 {
+    font-size: 1.1rem;
+  }
+  .history-info p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+  .history-info span {
+    font-size: 0.7rem;
   }
 }/*# sourceMappingURL=Style.css.map */
