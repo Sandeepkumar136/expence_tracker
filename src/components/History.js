@@ -132,22 +132,22 @@ const History = () => {
 
             <div className="modal-body">
               <div className="modal-row">
-                <span>Type</span>
+                <span>Type:</span>
                 <b>{selectedTx.type}</b>
               </div>
 
               <div className="modal-row">
-                <span>Amount</span>
+                <span>Amount:</span>
                 <b>₹{selectedTx.amount}</b>
               </div>
 
               <div className="modal-row">
-                <span>Category</span>
+                <span>Category:</span>
                 <b>{selectedTx.category}</b>
               </div>
 
               <div className="modal-row">
-                <span>Date</span>
+                <span>Date:</span>
                 <b>{new Date(selectedTx.date).toLocaleString()}</b>
               </div>
 
