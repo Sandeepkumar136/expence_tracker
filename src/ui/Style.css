@@ -1,5 +1,11 @@
 @charset "UTF-8";
 /* ================= Fonts ================= */
+.nav-logo-title {
+  font-family: "DM Serif Text", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 * {
   font-family: "TikTok Sans", sans-serif;
   font-optical-sizing: auto;
@@ -43,144 +49,49 @@
   box-sizing: border-box;
 }
 
-/* ================= Sidebar ================= */
-.sidebar {
-  position: fixed;
+.navigation {
+  border: 2px solid #000;
+  position: sticky;
   top: 0;
-  left: 0;
-  width: 250px; /* expanded */
-  height: 100vh;
-  color: #000;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  transition: all 0.3s ease;
 }
 
-/* Collapsed */
-.sidebar.collapsed {
-  width: 70px;
-}
-
-/* ================= Logo ================= */
-.logo-contain {
+.nav-up-contain {
+  border: 2px solid #000;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-  cursor: pointer;
+  gap: 0.5rem;
+  padding: 5px 10px;
+}
+
+.nav-logo-contain {
+  border: 2px solid #000;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-toggle {
+  font-size: 1.5rem;
 }
 
 .nav-logo {
-  width: 30px;
-  height: 30px;
+  width: 45px;
+  height: 48px;
 }
 
-.nt-nav-logo {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #000;
-  white-space: nowrap;
-  transition: opacity 0.2s ease;
+.nav-logo-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0.8;
 }
 
-.m-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-  cursor: pointer;
+.nav-user-logo {
+  font-size: 1.5rem;
 }
 
-.nav-logo {
-  width: 30px;
-  height: 30px;
-}
-
-.nt-nav-logo {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #000;
-  white-space: nowrap;
-  transition: opacity 0.2s ease;
-}
-
-/* Hide logo text when collapsed */
-.sidebar.collapsed .nt-nav-logo {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
-}
-
-/* ================= Navigation ================= */
-.nav-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Nav Item */
-.nav-item {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  text-decoration: none;
-  color: #111;
-  font-size: 0.8rem;
-  font-weight: 300;
-  transition: all 0.2s ease;
-}
-
-/* Icon */
-.nav-item i {
-  font-size: 22px;
-  min-width: 22px;
-  text-align: center;
-}
-
-/* Text */
-.ni-t {
-  opacity: 0.7;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-/* Hide text when collapsed */
-.sidebar.collapsed .ni-t {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* Center icons when collapsed */
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-}
-
-/* ================= Hover & Active ================= */
-.nav-item:hover {
-  color: #0077ff;
-}
-
-.nav-item.active {
-  color: #0077ff;
-}
-
-/* ================= Smooth Feel ================= */
-.sidebar,
-.nav-item,
-.ni-t,
-.nt-nav-logo {
-  transition: all 0.25s ease;
-}
-
+/* ================= Sidebar ================= */
 /* ================= Setting UI/UX==================*/
 .settings-container {
   min-height: 100vh;

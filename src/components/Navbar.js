@@ -10,18 +10,16 @@ const Navbar = () => {
 
   return (
     <>
-      <div className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
-        {/* Logo */}
-        <div className="logo-contain">
-          <img src={pictures.navlogo} alt="logo" className="nav-logo" />
-          {isOpen && <span className="nt-nav-logo">SancoXp.in</span>}
+      <div className='navigation'>
+        <div className="nav-up-contain">
+          <div className="nav-logo-contain">
+          <i className="nav-toggle bx bx-menu"></i>
+          <img src={pictures.navlogo} alt="Logo" className="nav-logo" />
+          <span className="nav-logo-title">SNE Exp</span>
+          </div>
+          <i className="nav-user-logo bx bx-user"></i>
         </div>
-
-        {/* Navigation */}
         <ul className="nav-list">
-          <li onClick={handleCollapse} className="nav-item tcm">
-            <i className={`bx ${isOpen ? "bx-x" : "bx-menu"}`}></i>
-          </li>
           <li>
             <NavLink
               to="/"
@@ -70,6 +68,7 @@ const Navbar = () => {
             </NavLink>
           </li>
         </ul>
+        
       </div>
       <div className="m-navbar">
         {/* Navigation */}
