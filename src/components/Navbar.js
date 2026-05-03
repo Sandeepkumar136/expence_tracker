@@ -10,65 +10,82 @@ const Navbar = () => {
 
   return (
     <>
-      <div className='navigation'>
+      <div className="navigation">
         <div className="nav-up-contain">
           <div className="nav-logo-contain">
-          <i className="nav-toggle bx bx-menu"></i>
-          <img src={pictures.navlogo} alt="Logo" className="nav-logo" />
-          <span className="nav-logo-title">SNE Exp</span>
+            <i onClick={handleCollapse} className={`nav-toggle bx ${isOpen ? "bx-x": "bx-menu"}`}></i>
+            <img src={pictures.navlogo} alt="Logo" className="nav-logo" />
+            <span className="nav-logo-title">SNE Exp</span>
           </div>
           <i className="nav-user-logo bx bx-user"></i>
         </div>
-        <ul className="nav-list">
-          <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                isActive ? "nav-item active" : "nav-item"
-              }
-            >
-              <i className="bx bx-wallet"></i>
-              {isOpen && <span className="ni-t">Accounts</span>}
-            </NavLink>
-          </li>
+        <div className={`sidebar ${isOpen ? "expend" : "collapsed"}`}>
+          <ul className="nav-list">
+            <li>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  [
+                    "nav-item",
+                    isActive ? "active" : "",
+                    isOpen ? "expanded" : "collapsed",
+                  ].join(" ")
+                }
+              >
+                <i className="bx bx-wallet"></i>
+                {isOpen && <span className="ni-t">Accounts</span>}
+              </NavLink>
+            </li>
 
-          <li>
-            <NavLink
-              to="/transactions"
-              className={({ isActive }) =>
-                isActive ? "nav-item active" : "nav-item"
-              }
-            >
-              <i className="bx bx-swap-vertical"></i>
-              {isOpen && <span className="ni-t">Transfer</span>}
-            </NavLink>
-          </li>
+            <li>
+              <NavLink
+                to="/transactions"
+                className={({ isActive }) =>
+                  [
+                    "nav-item",
+                    isActive ? "active" : "",
+                    isOpen ? "expanded" : "collapsed",
+                  ].join(" ")
+                }
+              >
+                <i className="bx bx-swap-vertical"></i>
+                {isOpen && <span className="ni-t">Transfer</span>}
+              </NavLink>
+            </li>
 
-          <li>
-            <NavLink
-              to="/history"
-              className={({ isActive }) =>
-                isActive ? "nav-item active" : "nav-item"
-              }
-            >
-              <i className="bx bx-history"></i>
-              {isOpen && <span className="ni-t">History</span>}
-            </NavLink>
-          </li>
+            <li>
+              <NavLink
+                to="/history"
+                className={({ isActive }) =>
+                  [
+                    "nav-item",
+                    isActive ? "active" : "",
+                    isOpen ? "expanded" : "collapsed",
+                  ].join(" ")
+                }
+              >
+                <i className="bx bx-history"></i>
+                {isOpen && <span className="ni-t">History</span>}
+              </NavLink>
+            </li>
 
-          <li>
-            <NavLink
-              to="/settings"
-              className={({ isActive }) =>
-                isActive ? "nav-item active" : "nav-item"
-              }
-            >
-              <i className="bx bx-user"></i>
-              {isOpen && <span className="ni-t">User</span>}
-            </NavLink>
-          </li>
-        </ul>
-        
+            <li>
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  [
+                    "nav-item",
+                    isActive ? "active" : "",
+                    isOpen ? "expanded" : "collapsed",
+                  ].join(" ")
+                }
+              >
+                <i className="bx bx-user"></i>
+                {isOpen && <span className="ni-t">User</span>}
+              </NavLink>
+            </li>
+          </ul>
+        </div>
       </div>
       <div className="m-navbar">
         {/* Navigation */}
