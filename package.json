@@ -17,6 +17,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^11.1.0",
     "react-top-loading-bar": "^3.0.2",
+    "recharts": "^3.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
