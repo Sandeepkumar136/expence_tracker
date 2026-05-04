@@ -13,11 +13,21 @@ const Navbar = () => {
       <div className="navigation">
         <div className="nav-up-contain">
           <div className="nav-logo-contain">
-            <i onClick={handleCollapse} className={`nav-toggle bx ${isOpen ? "bx-x": "bx-menu"}`}></i>
+            <i
+              onClick={handleCollapse}
+              className={`nav-toggle bx ${isOpen ? "bx-x" : "bx-menu"}`}
+            ></i>
             <img src={pictures.navlogo} alt="Logo" className="nav-logo" />
-            <span className="nav-logo-title">SNE Exp</span>
+            <span className="nav-logo-title">Railways.com</span>
           </div>
-          <i className="nav-user-logo bx bx-user"></i>
+          <NavLink
+            to="/user"
+            className={({ isActive }) =>
+              isActive
+                ? "bx bx-user nav-user-logo active"
+                : "bx bx-user nav-user-logo"
+            }
+          />
         </div>
         <div className={`sidebar ${isOpen ? "expend" : "collapsed"}`}>
           <ul className="nav-list">
@@ -71,7 +81,7 @@ const Navbar = () => {
 
             <li>
               <NavLink
-                to="/settings"
+                to="/analyze"
                 className={({ isActive }) =>
                   [
                     "nav-item",
@@ -80,8 +90,8 @@ const Navbar = () => {
                   ].join(" ")
                 }
               >
-                <i className="bx bx-user"></i>
-                {isOpen && <span className="ni-t">User</span>}
+                <i className="bx bx-analyze" />
+                {isOpen && <span className="ni-t">Analyze</span>}
               </NavLink>
             </li>
           </ul>
@@ -125,12 +135,12 @@ const Navbar = () => {
 
           <li>
             <NavLink
-              to="/settings"
+              to="/analyze"
               className={({ isActive }) =>
                 isActive ? "m-nav-item active" : "m-nav-item"
               }
             >
-              <i className="bx bx-user"></i>
+              <i className="bx bx-analyze" />
             </NavLink>
           </li>
         </ul>

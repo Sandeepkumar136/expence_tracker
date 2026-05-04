@@ -4,7 +4,6 @@ import AddAccount from "./AddAccount";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
-import Analytics from "./Analytics";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
 const COLLECTION_ID = "accounts";
@@ -85,7 +84,6 @@ const Accounts = () => {
 
       {/* Add Account */}
       <AddAccount refreshAccounts={getAccounts} />
-      <Analytics/>
     </div>
   );
 };
