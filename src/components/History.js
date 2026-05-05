@@ -3,13 +3,12 @@ import { databases } from "../appwrite/config";
 import { Query } from "appwrite";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
-import { motion, AnimatePresence } from "motion/react";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
+const COLLECTION_ID = "transactions";
 
 const History = () => {
   const [transactions, setTransactions] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedTx, setSelectedTx] = useState(null);
   const [actionTx, setActionTx] = useState(null);
@@ -17,27 +16,19 @@ const History = () => {
   const [loading, setLoading] = useState(true);
 
   const loadingBarRef = useRef(null);
-  const timerRef = useRef(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTransactions = async () => {
       try {
         loadingBarRef.current.continuousStart();
 
-        const tx = await databases.listDocuments(
+        const res = await databases.listDocuments(
           DATABASE_ID,
-          "transactions",
+          COLLECTION_ID,
           [Query.orderDesc("date")]
         );
 
-        const acc = await databases.listDocuments(
-          DATABASE_ID,
-          "accounts"
-        );
-
-        setTransactions(tx.documents);
-        setAccounts(acc.documents);
-
+        setTransactions(res.documents);
       } catch (err) {
         console.log(err);
       } finally {
@@ -46,11 +37,8 @@ const History = () => {
       }
     };
 
-    fetchData();
+    fetchTransactions();
   }, []);
-
-  const getAccountName = (id) =>
-    accounts.find((a) => a.$id === id)?.name || "Unknown";
 
   // 🔍 FILTER
   const filtered = transactions.filter((tx) =>
@@ -75,21 +63,10 @@ const History = () => {
       .filter((tx) => tx.type === "withdraw")
       .reduce((sum, tx) => sum + tx.amount, 0);
 
-  // 📱 HOLD
-  const handlePressStart = (tx) => {
-    timerRef.current = setTimeout(() => {
-      setActionTx(tx);
-    }, 500);
-  };
-
-  const handlePressEnd = () => {
-    clearTimeout(timerRef.current);
-  };
-
   // 🗑 DELETE
   const handleDelete = async (id) => {
     try {
-      await databases.deleteDocument(DATABASE_ID, "transactions", id);
+      await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
       setTransactions((prev) => prev.filter((t) => t.$id !== id));
       setActionTx(null);
     } catch (err) {
@@ -102,7 +79,7 @@ const History = () => {
     try {
       await databases.updateDocument(
         DATABASE_ID,
-        "transactions",
+        COLLECTION_ID,
         editTx.$id,
         {
           amount: Number(editTx.amount),
@@ -131,7 +108,8 @@ const History = () => {
 
         <div className="search-bar">
           <input
-            placeholder="Search..."
+            type="text"
+            placeholder="Search transactions"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -143,6 +121,8 @@ const History = () => {
         <div className="loader-center">
           <ThreeDots height="60" width="60" color="#6366f1" />
         </div>
+      ) : Object.keys(grouped).length === 0 ? (
+        <p className="empty">No transactions found</p>
       ) : (
         Object.keys(grouped).map((month) => (
           <div key={month} className="month-section">
@@ -153,103 +133,106 @@ const History = () => {
             </div>
 
             {grouped[month].map((tx) => (
-              <motion.div
-                key={tx.$id}
-                className="history-item"
+              <div key={tx.$id} className="history-item">
 
-                onClick={() => setSelectedTx(tx)}
+                {/* CLICK → DETAILS */}
+                <div
+                  className="history-main"
+                  onClick={() => setSelectedTx(tx)}
+                >
+                  <div className="history-icon">
+                    {tx.type === "deposit" ? "⬆️" : "⬇️"}
+                  </div>
 
-                onMouseDown={() => handlePressStart(tx)}
-                onMouseUp={handlePressEnd}
-                onTouchStart={() => handlePressStart(tx)}
-                onTouchEnd={handlePressEnd}
+                  <div className="history-info">
+                    <p className="tx-category">
+                      {tx.category || "General"}
+                    </p>
+                    <span>
+                      {new Date(tx.date).toLocaleString()}
+                    </span>
+                  </div>
 
-                whileTap={{ scale: 0.97 }}
-              >
-                <div>{tx.type === "deposit" ? "⬆️" : "⬇️"}</div>
-
-                <div>
-                  <p>{tx.category}</p>
-                  <span>
-                    {getAccountName(tx.accountId)} •{" "}
-                    {new Date(tx.date).toLocaleString()}
-                  </span>
+                  <div className={`history-amount ${tx.type}`}>
+                    {tx.type === "deposit" ? "+" : "-"}₹{tx.amount}
+                  </div>
                 </div>
 
-                <div>
-                  {tx.type === "deposit" ? "+" : "-"}₹{tx.amount}
-                </div>
-
-                {/* DESKTOP MENU */}
+                {/* 3 DOT MENU */}
                 <div
                   className="tx-menu"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActionTx(tx);
-                  }}
+                  onClick={() => setActionTx(tx)}
                 >
                   ⋮
                 </div>
-              </motion.div>
+
+              </div>
             ))}
           </div>
         ))
       )}
 
       {/* ACTION MENU */}
-      <AnimatePresence>
-        {actionTx && (
-          <motion.div
-            className="action-overlay"
-            onClick={() => setActionTx(null)}
-          >
-            <motion.div
-              className="action-sheet"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button onClick={() => {
-                setEditTx(actionTx);
-                setActionTx(null);
-              }}>
-                ✏️ Edit
-              </button>
+      {actionTx && (
+        <div className="action-overlay" onClick={() => setActionTx(null)}>
+          <div className="action-sheet" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => {
+              setEditTx(actionTx);
+              setActionTx(null);
+            }}>
+              ✏️ Edit
+            </button>
 
-              <button onClick={() => handleDelete(actionTx.$id)}>
-                🗑 Delete
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <button onClick={() => handleDelete(actionTx.$id)}>
+              🗑 Delete
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* EDIT MODAL */}
-      <AnimatePresence>
-        {editTx && (
-          <motion.div className="modal-overlay" onClick={() => setEditTx(null)}>
-            <motion.div className="modal" onClick={(e) => e.stopPropagation()}>
-              <h3>Edit Transaction</h3>
+      {editTx && (
+        <div className="modal-overlay" onClick={() => setEditTx(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Edit Transaction</h3>
 
-              <input
-                type="number"
-                value={editTx.amount}
-                onChange={(e) =>
-                  setEditTx({ ...editTx, amount: e.target.value })
-                }
-              />
+            <input
+              type="number"
+              value={editTx.amount}
+              onChange={(e) =>
+                setEditTx({ ...editTx, amount: e.target.value })
+              }
+            />
 
-              <input
-                type="text"
-                value={editTx.note}
-                onChange={(e) =>
-                  setEditTx({ ...editTx, note: e.target.value })
-                }
-              />
+            <input
+              type="text"
+              value={editTx.note}
+              onChange={(e) =>
+                setEditTx({ ...editTx, note: e.target.value })
+              }
+            />
 
-              <button onClick={handleUpdate}>Update</button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <button onClick={handleUpdate}>Update</button>
+          </div>
+        </div>
+      )}
+
+      {/* DETAILS MODAL */}
+      {selectedTx && (
+        <div className="modal-overlay" onClick={() => setSelectedTx(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Transaction Details</h3>
+
+            <p><b>Type:</b> {selectedTx.type}</p>
+            <p><b>Amount:</b> ₹{selectedTx.amount}</p>
+            <p><b>Category:</b> {selectedTx.category || "General"}</p>
+            <p><b>Date:</b> {new Date(selectedTx.date).toLocaleString()}</p>
+            <p>{selectedTx.note || "No note"}</p>
+
+            <button onClick={() => setSelectedTx(null)}>Close</button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
