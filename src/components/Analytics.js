@@ -25,7 +25,7 @@ const Analytics = () => {
       const tx = await databases.listDocuments(
         DATABASE_ID,
         "transactions",
-        [Query.limit(100)]
+        [Query.limit(200)]
       );
 
       const acc = await databases.listDocuments(
@@ -40,7 +40,13 @@ const Analytics = () => {
     fetchData();
   }, []);
 
-  // 🔥 FILTER ONLY EXPENSES
+  // 💰 TOTAL BALANCE
+  const totalBalance = accounts.reduce(
+    (sum, acc) => sum + acc.balance,
+    0
+  );
+
+  // 🔥 ONLY EXPENSES
   const expenses = transactions.filter((tx) => tx.type === "withdraw");
 
   // 📅 MONTHLY EXPENSE
@@ -57,7 +63,7 @@ const Analytics = () => {
     }, {})
   );
 
-  // 🏷️ CATEGORY-WISE EXPENSE
+  // 🏷️ CATEGORY
   const categoryData = Object.values(
     expenses.reduce((acc, tx) => {
       const cat = tx.category || "Other";
@@ -69,7 +75,7 @@ const Analytics = () => {
     }, {})
   );
 
-  // 🏦 ACCOUNT-WISE EXPENSE
+  // 🏦 ACCOUNT
   const accountData = Object.values(
     expenses.reduce((acc, tx) => {
       const accountName =
@@ -89,28 +95,35 @@ const Analytics = () => {
   return (
     <div className="analytics-container">
 
-      {/* 📅 MONTHLY EXPENSE */}
+      {/* 🔥 PORTFOLIO CARD */}
+      <div className="portfolio-card">
+        <h2>Total Balance</h2>
+        <h1>₹{totalBalance}</h1>
+        <p>Across all accounts</p>
+      </div>
+
+      {/* 📅 MONTHLY */}
       <div className="chart-card">
         <h3>Monthly Expenses</h3>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={monthlyData}>
             <XAxis dataKey="name" />
             <Tooltip />
-            <Bar dataKey="total" fill="#6366f1" radius={[6,6,0,0]} />
+            <Bar dataKey="total" fill="#6366f1" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* 🏷️ CATEGORY PIE */}
+      {/* 🏷️ CATEGORY */}
       <div className="chart-card">
-        <h3>Expenses by Category</h3>
+        <h3>By Category</h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie
               data={categoryData}
               dataKey="value"
+              innerRadius={50}
               outerRadius={90}
-              innerRadius={40}   // 🔥 donut style
             >
               {categoryData.map((_, i) => (
                 <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -121,14 +134,14 @@ const Analytics = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* 🏦 ACCOUNT BAR */}
+      {/* 🏦 ACCOUNT */}
       <div className="chart-card">
-        <h3>Expenses by Account</h3>
+        <h3>By Account</h3>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={accountData}>
             <XAxis dataKey="name" />
             <Tooltip />
-            <Bar dataKey="total" fill="#22c55e" radius={[6,6,0,0]} />
+            <Bar dataKey="total" fill="#22c55e" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

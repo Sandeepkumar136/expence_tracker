@@ -8,9 +8,12 @@ import { toast } from "react-toastify";
 const DATABASE_ID = "69e8d8b30039451280c9";
 const ACCOUNTS_COLLECTION = "accounts";
 const TRANSACTIONS_COLLECTION = "transactions";
+const CATEGORY_COLLECTION = "categories";
 
 const Transactions = () => {
   const [accounts, setAccounts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
   const [type, setType] = useState("deposit");
   const [amount, setAmount] = useState("");
   const [accountId, setAccountId] = useState("");
@@ -20,55 +23,77 @@ const Transactions = () => {
 
   const loadingBarRef = useRef(null);
 
-  // dropdown states
   const [openType, setOpenType] = useState(false);
   const [openAccount, setOpenAccount] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
 
   const typeRef = useRef();
   const accRef = useRef();
+  const catRef = useRef();
 
-  // close dropdown
+  // 🔒 Close dropdowns
   useEffect(() => {
     const handleClick = (e) => {
       if (!typeRef.current?.contains(e.target)) setOpenType(false);
       if (!accRef.current?.contains(e.target)) setOpenAccount(false);
+      if (!catRef.current?.contains(e.target)) setOpenCategory(false);
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // fetch accounts
+  // 🔥 Reset category when type changes (IMPORTANT FIX)
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        loadingBarRef.current.continuousStart(); // 🔥 start bar
+    setCategory("");
+  }, [type]);
 
-        const res = await databases.listDocuments(
+  // 📥 Fetch accounts + categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        loadingBarRef.current.continuousStart();
+
+        const acc = await databases.listDocuments(
           DATABASE_ID,
           ACCOUNTS_COLLECTION
         );
 
-        setAccounts(res.documents);
+        const cat = await databases.listDocuments(
+          DATABASE_ID,
+          CATEGORY_COLLECTION
+        );
+
+        setAccounts(acc.documents);
+        setCategories(cat.documents);
+
       } catch (err) {
-        console.log(err);
+        console.log("Fetch error:", err);
       } finally {
-        loadingBarRef.current.complete(); // 🔥 stop bar
+        loadingBarRef.current.complete();
       }
     };
 
-    fetchAccounts();
+    fetchData();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!accountId || !amount) {
-      alert("Please select account and enter amount");
+    const amt = Number(amount);
+
+    // ✅ VALIDATION
+    if (!accountId || !category || !amount) {
+      toast.error("Fill all fields");
+      return;
+    }
+
+    if (isNaN(amt) || amt <= 0) {
+      toast.error("Enter valid amount");
       return;
     }
 
     setLoading(true);
-    loadingBarRef.current.continuousStart(); // 🔥 start bar
+    loadingBarRef.current.continuousStart();
 
     try {
       const account = await databases.getDocument(
@@ -77,13 +102,15 @@ const Transactions = () => {
         accountId
       );
 
-      const amt = Number(amount);
-
+      // ❌ Prevent invalid withdraw
       if (type === "withdraw" && account.balance < amt) {
-        alert("Insufficient balance ❌");
+        toast.error("Insufficient balance ❌");
+        setLoading(false);
+        loadingBarRef.current.complete();
         return;
       }
 
+      // 📝 Create transaction
       await databases.createDocument(
         DATABASE_ID,
         TRANSACTIONS_COLLECTION,
@@ -98,6 +125,7 @@ const Transactions = () => {
         }
       );
 
+      // 💰 Update account balance
       const newBalance =
         type === "deposit"
           ? account.balance + amt
@@ -111,24 +139,25 @@ const Transactions = () => {
       );
 
       toast.success("Transaction added");
-    
+
+      // 🔄 Reset form
       setAmount("");
       setCategory("");
       setNote("");
       setAccountId("");
 
     } catch (err) {
-      console.log(err);
+      console.log("Transaction error:", err);
+      toast.error("Transaction failed ❌");
     } finally {
       setLoading(false);
-      loadingBarRef.current.complete(); // 🔥 end bar
+      loadingBarRef.current.complete();
     }
   };
 
   return (
     <div className="transaction-container">
 
-      {/* 🔝 TOP LOADING BAR */}
       <LoadingBar color="#6366f1" ref={loadingBarRef} height={3} />
 
       <form className="transaction-card" onSubmit={handleSubmit}>
@@ -177,19 +206,37 @@ const Transactions = () => {
           )}
         </div>
 
+        {/* CATEGORY */}
+        <div className="custom-select" ref={catRef}>
+          <div className="selected" onClick={() => setOpenCategory(!openCategory)}>
+            {category || "Select Category"}
+          </div>
+
+          {openCategory && (
+            <div className="options">
+              {categories
+                .filter((c) => c.type === type)
+                .map((c) => (
+                  <div
+                    key={c.$id}
+                    onClick={() => {
+                      setCategory(c.name);
+                      setOpenCategory(false);
+                    }}
+                  >
+                    {c.name}
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+
         {/* INPUTS */}
         <input
           type="number"
           placeholder="Enter amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
         />
 
         <input
@@ -202,7 +249,7 @@ const Transactions = () => {
         {/* BUTTON */}
         <button type="submit" disabled={loading}>
           {loading ? (
-            <ThreeDots   height="20" width="40" color="#fff" />
+            <ThreeDots height="20" width="40" color="#fff" />
           ) : (
             "Add Transaction"
           )}

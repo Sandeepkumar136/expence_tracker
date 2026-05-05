@@ -7,6 +7,7 @@ import { useDarkMode } from "../context/DarkModeContext";
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
+import Categories from "./Categories";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -102,7 +103,7 @@ const Settings = () => {
         <p><i className="bx bx-git-compare"></i> SDK 54.0</p>
         <p><i className="bx bx-info-circle"></i> Version Info</p>
       </div>
-
+      <Categories/>
     </div>
   );
 };
