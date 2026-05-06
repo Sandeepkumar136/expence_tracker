@@ -573,9 +573,13 @@
   padding: 1rem;
 }
 
-/* HEADER */
 .history-header {
   margin-bottom: 15px;
+}
+
+.history-header h2 {
+  font-size: 1.5rem;
+  opacity: 0.8;
 }
 
 .search-bar {
@@ -586,49 +590,6 @@
   border-radius: 12px;
   margin-top: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.01);
-}
-
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  background: #fff;
-  margin-bottom: 10px;
-  border-radius: 10px;
-}
-
-.tx-menu {
-  cursor: pointer;
-}
-
-.action-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: flex-end;
-}
-
-.action-sheet {
-  width: 100%;
-  background: white;
-  padding: 20px;
-  border-radius: 16px 16px 0 0;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
 }
 
 .search-bar i {
@@ -643,7 +604,6 @@
   padding: 0.5rem 0;
 }
 
-/* MONTH */
 .month-header {
   display: flex;
   justify-content: space-between;
@@ -657,7 +617,6 @@
   transition: 0.2s;
 }
 
-/* ITEM */
 .history-item {
   display: flex;
   align-items: center;
@@ -686,7 +645,19 @@
   -o-transform: scale(1.005);
 }
 
-/* ICON */
+.history-main {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-content {
+  display: flex;
+  justify-content: start;
+  gap: 0.3rem;
+  align-items: center;
+}
+
 .history-icon {
   width: 40px;
   height: 40px;
@@ -697,27 +668,53 @@
   justify-content: center;
 }
 
-/* INFO */
 .history-info {
-  flex: 1;
-  margin-left: 10px;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
-.history-info span {
-  font-size: 0.8rem;
+.tx-category {
+  font-size: 1rem;
+  opacity: 0.9;
+  font-weight: 550;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.history-name {
-  font-weight: 500;
-  font-size: 0.9rem;
+.history-spans {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.history-time {
-  font-size: 0.75rem;
-  opacity: 0.7;
+.tx-account {
+  font-size: 0.7rem;
+  border: 1px solid #22c55e;
+  color: #26924e;
+  display: flex;
+  padding: 1px;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
 }
 
-/* AMOUNT */
+.tx-date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 550;
+}
+
+.history-amount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .history-amount.deposit {
   color: green;
 }
@@ -726,94 +723,18 @@
   color: red;
 }
 
-/* 🔥 MODAL */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+.tx-menu {
+  width: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.2s ease;
 }
 
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 400px;
-  animation: slideUp 0.3s ease;
-}
-
-.modal-header {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  opacity: 0.7;
-}
-
-.modal-body {
+.tx-menu {
   display: flex;
-  justify-content: start;
-  align-items: start;
-  gap: 0.3rem;
-  flex-direction: column;
-}
-
-.modal-row {
-  width: 100%;
-  padding: 0.5rem;
-  display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
-  gap: 0.3rem;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  background-color: #e2e6fb;
-}
-
-.modal-row span {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.modal-row b {
-  font-size: 0.8rem;
-  text-transform: capitalize;
-}
-
-.modal-note {
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 0.8rem;
-  text-transform: capitalize;
-  background-color: #f0f2ff;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-}
-
-.modal button {
-  margin-top: 15px;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  background: #6366f1;
-  color: white;
-  cursor: pointer;
-}
-
-.modal button:hover {
-  background: #4f46e5;
+  font-size: 1.4rem;
 }
 
 .login-container {
@@ -1139,19 +1060,5 @@
   .custom-select {
     font-size: 0.9rem;
     opacity: 1;
-  }
-  .history-container {
-    padding-bottom: 3.5rem;
-  }
-  .history-header h2 {
-    font-size: 1.1rem;
-  }
-  .history-info p {
-    font-size: 0.9rem;
-    font-weight: 600;
-    opacity: 0.7;
-  }
-  .history-info span {
-    font-size: 0.7rem;
   }
 }/*# sourceMappingURL=Style.css.map */
