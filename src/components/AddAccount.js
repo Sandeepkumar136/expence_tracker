@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { databases } from "../appwrite/config";
 import { ID } from "appwrite";
+import { toast } from "react-toastify";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
 const COLLECTION_ID = "accounts";
@@ -14,7 +15,7 @@ const AddAccount = ({ refreshAccounts }) => {
     e.preventDefault();
 
     if (!name || !balance) {
-      alert("Fill all fields");
+      toast.error("Fill all fields");
       return;
     }
 

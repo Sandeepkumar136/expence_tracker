@@ -232,39 +232,6 @@
   pointer-events: none;
 }
 
-/* ===== Mobile Bottom Nav ===== */
-.m-navbar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border-light);
-}
-
-.m-nav-list {
-  display: flex;
-  justify-content: space-around;
-  padding: 0.5rem 0;
-  list-style: none;
-}
-
-.m-nav-item {
-  font-size: 1.5rem;
-  color: var(--text-light);
-  padding: 0.4rem;
-  transition: all 0.25s ease;
-}
-
-.m-nav-item:hover {
-  color: var(--primary);
-  transform: translateY(-2px);
-}
-
-.m-nav-item.active {
-  color: var(--primary);
-}
-
 /* ================= Setting UI/UX==================*/
 .settings-container {
   min-height: 100vh;
@@ -925,7 +892,7 @@
   background: rgba(255, 255, 255, 0.852);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  padding: 0.8rem;
+  padding: 1rem;
 }
 
 .m-nav-list {
@@ -960,7 +927,7 @@
 
 .m-nav-item i {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
 }
 
 .m-nav-item:hover {
@@ -1143,10 +1110,11 @@
   .account-details h3 {
     font-size: 0.9rem;
     font-weight: 650;
+    opacity: 0.7;
   }
   .account-details p {
     font-size: 0.9rem;
-    font-weight: 650;
+    font-weight: 500;
     color: #000000;
   }
   .account-card.inp {
