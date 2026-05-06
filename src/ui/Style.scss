@@ -128,11 +128,36 @@
   background: var(--primary);
   transition: all 0.3s ease;
 }
-
+.nav-user-logo:active,
+.nav-user-logo:visited,
+.nav-user-logo:focus {
+  background-color: var(--primary) !important;
+  outline: none;
+  -webkit-tap-highlight-color: var(--primary);
+  /*<–THISisthetrueslayer*/-webkit-tap-highlight-color: var(--primary);
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
 .nav-user-logo:hover,
 .nav-user-logo.active {
   background: #3730a3;
   transform: scale(1.05);
+}
+.nav-user-logo.active:active,
+.nav-user-logo.active:visited,
+.nav-user-logo.active:focus {
+  border-radius: 50%;
+  background-color: var(--primary) !important;
+  outline: none;
+  -webkit-tap-highlight-color: var(--primary);
+  /*<–THISisthetrueslayer*/-webkit-tap-highlight-color: var(--primary);
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
 }
 
 /* ================= Sidebar ================= */
@@ -371,6 +396,7 @@
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
+
 
 .account-card h2 {
   text-align: center;
