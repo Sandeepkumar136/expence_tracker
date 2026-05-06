@@ -443,7 +443,7 @@
 }
 // ============= Transactions =============
 .transaction-container {
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -541,6 +541,8 @@
   border-radius: 10px;
   background: #f9fafb;
   cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.8;
 }
 .selected:active,
 .selected:visited,
@@ -1124,10 +1126,10 @@
     }
     .transaction-card {
       max-width: 100%;
-      margin-top: 3rem;
+      // margin-top: 3rem;
     }
     .transaction-card h2 {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
     .transaction-card input,
     .transaction-card select {
