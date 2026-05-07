@@ -14,6 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Login from "./Pages/Login";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import Analytics from "./components/Analytics";
+import { EditModalProvider } from "./context/EditModalContext";
 
 const Layout = ({ children }) => (
   <>
@@ -26,6 +27,7 @@ const App = () => {
   return (
     <Router>
       <ToastContainer />
+      <EditModalProvider>
       <DarkModeProvider>        
       <Routes>
         {/* Public */}
@@ -90,6 +92,7 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
           </DarkModeProvider>
+          </EditModalProvider>
     </Router>
   );
 };
