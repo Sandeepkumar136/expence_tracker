@@ -2,17 +2,33 @@ import { createContext, useContext, useState } from "react";
 
 const EditModalContext = createContext();
 
-export const EditModalProvider = ({children})=>{
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const openEdit = () => setIsEditOpen(true);
-    const closeEdit = () => setIsEditOpen(false);
+export const EditModalProvider = ({ children }) => {
 
-    return(
-        <EditModalContext.Provider value={{openEdit, closeEdit, isEditOpen}}>
-            {children}
-        </EditModalContext.Provider>
-    )
+  const [actionTx, setActionTx] = useState(null);
 
+  const [handleDelete, setHandleDelete] =
+    useState(() => () => {});
 
-}
-export const useEdit = () => useContext(EditModalContext);
+  const [setEditTx, setGlobalEditTx] =
+    useState(() => () => {});
+
+  return (
+    <EditModalContext.Provider
+      value={{
+        actionTx,
+        setActionTx,
+
+        handleDelete,
+        setHandleDelete,
+
+        setEditTx,
+        setGlobalEditTx,
+      }}
+    >
+      {children}
+    </EditModalContext.Provider>
+  );
+};
+
+export const useEditModal = () =>
+  useContext(EditModalContext);

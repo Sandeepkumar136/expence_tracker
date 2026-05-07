@@ -730,10 +730,24 @@
 // History EDIT MODAL 
 .action-overlay{
   border: 2px solid #000;
+  // position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   position: fixed;
-  bottom: 0;
-  width: 93%;
-  height: 50px;
+  display: flex;
+  align-items: end;
+}
+.action-sheet{
+  border: 2px solid #000;
+  height: 80px;
+  width: 100%;
+  z-index: initial;
+  margin-left: 68.9px;
+  background-color: #fff;
+
+  
 }
 
 // ================= Login =================

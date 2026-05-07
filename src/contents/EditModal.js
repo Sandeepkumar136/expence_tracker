@@ -1,11 +1,14 @@
 import React from "react";
+import { useEditModal } from "../context/EditModalContext";
 
-const EditModal = ({
-  actionTx,
-  setActionTx,
-  setEditTx,
-  handleDelete,
-}) => {
+const EditModal = () => {
+
+  const {
+    actionTx,
+    setActionTx,
+    handleDelete,
+    setEditTx,
+  } = useEditModal();
 
   if (!actionTx) return null;
 
@@ -19,6 +22,7 @@ const EditModal = ({
         onClick={(e) => e.stopPropagation()}
       >
 
+        {/* EDIT */}
         <button
           className="action-btn edit-btn"
           onClick={() => {
@@ -30,6 +34,7 @@ const EditModal = ({
           Edit
         </button>
 
+        {/* DELETE */}
         <button
           className="action-btn delete-btn"
           onClick={() => handleDelete(actionTx)}

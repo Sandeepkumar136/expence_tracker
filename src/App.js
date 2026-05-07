@@ -15,11 +15,13 @@ import Login from "./Pages/Login";
 import { DarkModeProvider } from "./context/DarkModeContext";
 import Analytics from "./components/Analytics";
 import { EditModalProvider } from "./context/EditModalContext";
+import EditModal from "./contents/EditModal";
 
 const Layout = ({ children }) => (
   <>
     <Navbar />
     <div className="main-content">{children}</div>
+    <EditModal/>
   </>
 );
 
