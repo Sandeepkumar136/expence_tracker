@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 
 import { databases } from "../appwrite/config";
 
@@ -22,38 +17,25 @@ const TRANSACTION_COLLECTION = "transactions";
 const ACCOUNT_COLLECTION = "accounts";
 
 const History = () => {
+  const [transactions, setTransactions] = useState([]);
 
-  const [transactions, setTransactions] =
-    useState([]);
+  const [accounts, setAccounts] = useState([]);
 
-  const [accounts, setAccounts] =
-    useState([]);
+  const [search, setSearch] = useState("");
 
-  const [search, setSearch] =
-    useState("");
+  const [selectedTx, setSelectedTx] = useState(null);
 
-  const [selectedTx, setSelectedTx] =
-    useState(null);
+  const [editTx, setEditTx] = useState(null);
 
-  const [editTx, setEditTx] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   const loadingBarRef = useRef(null);
 
-  const {
-    setActionTx,
-    handleDeleteRef,
-    globalEditTxRef,
-  } = useEditModal();
+  const { setActionTx, handleDeleteRef, globalEditTxRef } = useEditModal();
 
   // 🔥 FETCH DATA
   const fetchData = async () => {
-
     try {
-
       setLoading(true);
 
       loadingBarRef.current.continuousStart();
@@ -62,25 +44,21 @@ const History = () => {
       const txRes = await databases.listDocuments(
         DATABASE_ID,
         TRANSACTION_COLLECTION,
-        [Query.orderDesc("date")]
+        [Query.orderDesc("date")],
       );
 
       // ACCOUNTS
       const accRes = await databases.listDocuments(
         DATABASE_ID,
-        ACCOUNT_COLLECTION
+        ACCOUNT_COLLECTION,
       );
 
       setTransactions(txRes.documents);
 
       setAccounts(accRes.documents);
-
     } catch (err) {
-
       console.log(err);
-
     } finally {
-
       setLoading(false);
 
       loadingBarRef.current.complete();
@@ -88,116 +66,70 @@ const History = () => {
   };
 
   useEffect(() => {
-
     fetchData();
-
   }, []);
 
   // 🏦 ACCOUNT NAME
   const getAccountName = (accountId) => {
+    const account = accounts.find((acc) => acc.$id === accountId);
 
-    const account = accounts.find(
-      (acc) => acc.$id === accountId
-    );
-
-    return account
-      ? account.name
-      : "Unknown";
+    return account ? account.name : "Unknown";
   };
 
   // 🔍 SEARCH
   const filtered = transactions.filter((tx) => {
-
     const keyword = search.toLowerCase();
 
     return (
-
-      (tx.category || "")
-        .toLowerCase()
-        .includes(keyword)
-
-      ||
-
-      (tx.note || "")
-        .toLowerCase()
-        .includes(keyword)
-
-      ||
-
-      getAccountName(tx.accountId)
-        .toLowerCase()
-        .includes(keyword)
+      (tx.category || "").toLowerCase().includes(keyword) ||
+      (tx.note || "").toLowerCase().includes(keyword) ||
+      getAccountName(tx.accountId).toLowerCase().includes(keyword)
     );
   });
 
   // 📅 GROUP BY MONTH
   const grouped = filtered.reduce((acc, tx) => {
-
-    const month = new Date(tx.date)
-      .toLocaleString("default", {
-        month: "short",
-        year: "numeric",
-      });
+    const month = new Date(tx.date).toLocaleString("default", {
+      month: "short",
+      year: "numeric",
+    });
 
     if (!acc[month]) {
-
       acc[month] = [];
     }
 
     acc[month].push(tx);
 
     return acc;
-
   }, {});
 
   // 💰 MONTHLY EXPENSE
   const getMonthlyExpense = (items) => {
-
     return items
       .filter((tx) => tx.type === "withdraw")
-      .reduce(
-        (sum, tx) =>
-          sum + Number(tx.amount),
-        0
-      );
+      .reduce((sum, tx) => sum + Number(tx.amount), 0);
   };
 
   // 🗑 DELETE
   const handleDelete = useCallback(
-
     async (tx) => {
-
       try {
-
-        const account = accounts.find(
-          (a) => a.$id === tx.accountId
-        );
+        const account = accounts.find((a) => a.$id === tx.accountId);
 
         if (!account) return;
 
         // SAFE NUMBER
-        let newBalance =
-          Number(account.balance || 0);
+        let newBalance = Number(account.balance || 0);
 
         // RESTORE OLD EFFECT
         if (tx.type === "withdraw") {
-
-          newBalance =
-            Number(newBalance) +
-            Number(tx.amount);
-
+          newBalance = Number(newBalance) + Number(tx.amount);
         } else {
-
-          newBalance =
-            Number(newBalance) -
-            Number(tx.amount);
+          newBalance = Number(newBalance) - Number(tx.amount);
         }
 
         // PREVENT INVALID VALUE
-        if (
-          isNaN(newBalance) ||
-          newBalance < 0
-        ) {
+        if (isNaN(newBalance) || newBalance < 0) {
           newBalance = 0;
         }
 
@@ -208,20 +140,18 @@ const History = () => {
           tx.accountId,
           {
             balance: Number(newBalance),
-          }
+          },
         );
 
         // DELETE TX
         await databases.deleteDocument(
           DATABASE_ID,
           TRANSACTION_COLLECTION,
-          tx.$id
+          tx.$id,
         );
 
         // UI UPDATE
-        setTransactions((prev) =>
-          prev.filter((t) => t.$id !== tx.$id)
-        );
+        setTransactions((prev) => prev.filter((t) => t.$id !== tx.$id));
 
         setAccounts((prev) =>
           prev.map((acc) =>
@@ -230,71 +160,45 @@ const History = () => {
                   ...acc,
                   balance: Number(newBalance),
                 }
-              : acc
-          )
+              : acc,
+          ),
         );
-
       } catch (err) {
-
         console.log(err);
       }
     },
 
-    [accounts]
+    [accounts],
   );
 
   // ✏️ UPDATE
   const handleUpdate = async () => {
-
     try {
+      const oldTx = transactions.find((t) => t.$id === editTx.$id);
 
-      const oldTx = transactions.find(
-        (t) => t.$id === editTx.$id
-      );
-
-      const account = accounts.find(
-        (a) => a.$id === editTx.accountId
-      );
+      const account = accounts.find((a) => a.$id === editTx.accountId);
 
       if (!oldTx || !account) return;
 
       // SAFE NUMBER
-      let balance =
-        Number(account.balance || 0);
+      let balance = Number(account.balance || 0);
 
       // REMOVE OLD EFFECT
       if (oldTx.type === "withdraw") {
-
-        balance =
-          Number(balance) +
-          Number(oldTx.amount);
-
+        balance = Number(balance) + Number(oldTx.amount);
       } else {
-
-        balance =
-          Number(balance) -
-          Number(oldTx.amount);
+        balance = Number(balance) - Number(oldTx.amount);
       }
 
       // APPLY NEW EFFECT
       if (editTx.type === "withdraw") {
-
-        balance =
-          Number(balance) -
-          Number(editTx.amount);
-
+        balance = Number(balance) - Number(editTx.amount);
       } else {
-
-        balance =
-          Number(balance) +
-          Number(editTx.amount);
+        balance = Number(balance) + Number(editTx.amount);
       }
 
       // PREVENT INVALID VALUE
-      if (
-        isNaN(balance) ||
-        balance < 0
-      ) {
+      if (isNaN(balance) || balance < 0) {
         balance = 0;
       }
 
@@ -306,7 +210,7 @@ const History = () => {
         {
           amount: Number(editTx.amount),
           note: editTx.note,
-        }
+        },
       );
 
       // UPDATE ACCOUNT
@@ -316,7 +220,7 @@ const History = () => {
         editTx.accountId,
         {
           balance: Number(balance),
-        }
+        },
       );
 
       // UI UPDATE
@@ -327,8 +231,8 @@ const History = () => {
                 ...editTx,
                 amount: Number(editTx.amount),
               }
-            : tx
-        )
+            : tx,
+        ),
       );
 
       setAccounts((prev) =>
@@ -338,215 +242,109 @@ const History = () => {
                 ...acc,
                 balance: Number(balance),
               }
-            : acc
-        )
+            : acc,
+        ),
       );
 
       setEditTx(null);
-
     } catch (err) {
-
       console.log(err);
     }
   };
 
   // ✅ REGISTER GLOBAL ACTIONS
   useEffect(() => {
+    handleDeleteRef.current = handleDelete;
 
-    handleDeleteRef.current =
-      handleDelete;
-
-    globalEditTxRef.current =
-      setEditTx;
-
-  }, [handleDelete]);
+    globalEditTxRef.current = setEditTx;
+  }, [handleDelete, handleDeleteRef, globalEditTxRef]);
 
   return (
-
     <div className="history-container">
-
       {/* TOP LOADING */}
-      <LoadingBar
-        color="#6366f1"
-        ref={loadingBarRef}
-        height={3}
-      />
+      <LoadingBar color="#6366f1" ref={loadingBarRef} height={3} />
 
       {/* HEADER */}
       <div className="history-header">
-
-        <h2>
-          Transaction History
-        </h2>
+        <h2>Transaction History</h2>
 
         <div className="search-bar">
-
           <input
             type="text"
             placeholder="Search transactions..."
             value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
+            onChange={(e) => setSearch(e.target.value)}
           />
-
         </div>
-
       </div>
 
       {/* LOADING */}
       {loading ? (
-
         <div className="loader-center">
-
-          <ThreeDots
-            height="60"
-            width="60"
-            color="#6366f1"
-          />
-
+          <ThreeDots height="60" width="60" color="#6366f1" />
         </div>
-
       ) : (
-
         Object.keys(grouped).map((month) => (
-
-          <div
-            key={month}
-            className="month-section"
-          >
-
+          <div key={month} className="month-section">
             {/* MONTH HEADER */}
             <div className="month-header">
-
               <span>{month}</span>
 
               <span className="month-total">
-
-                ₹{getMonthlyExpense(
-                  grouped[month]
-                )}
-
+                ₹{getMonthlyExpense(grouped[month])}
               </span>
-
             </div>
 
             {/* TRANSACTIONS */}
             {grouped[month].map((tx) => (
-
-              <div
-                key={tx.$id}
-                className="history-item"
-              >
-
+              <div key={tx.$id} className="history-item">
                 {/* MAIN */}
-                <div
-                  className="history-main"
-                  onClick={() =>
-                    setSelectedTx(tx)
-                  }
-                >
-
+                <div className="history-main" onClick={() => setSelectedTx(tx)}>
                   <div className="history-content">
-
                     {/* ICON */}
                     <div className="history-icon">
-
-                      {tx.type === "deposit"
-                        ? "⬆️"
-                        : "⬇️"}
-
+                      {tx.type === "deposit" ? "⬆️" : "⬇️"}
                     </div>
 
                     {/* INFO */}
                     <div className="history-info">
-
                       <p className="tx-category">
-
-                        {tx.category ||
-                          "Transaction"}
-
+                        {tx.category || "Transaction"}
                       </p>
 
                       <div className="history-spans">
-
                         <span className="tx-account">
-
-                          {getAccountName(
-                            tx.accountId
-                          )}
-
+                          {getAccountName(tx.accountId)}
                         </span>
 
                         <span className="tx-date">
-
-                          {new Date(tx.date)
-                            .toLocaleString()}
-
+                          {new Date(tx.date).toLocaleString()}
                         </span>
-
                       </div>
-
                     </div>
-
                   </div>
 
                   {/* AMOUNT */}
-                  <div
-                    className={`history-amount ${tx.type}`}
-                  >
-
-                    {tx.type === "deposit"
-                      ? "+"
-                      : "-"}
-
-                    ₹{tx.amount}
-
+                  <div className={`history-amount ${tx.type}`}>
+                    {tx.type === "deposit" ? "+" : "-"}₹{tx.amount}
                   </div>
-
                 </div>
 
                 {/* MENU */}
-                <div
-                  className="tx-menu"
-                  onClick={() =>
-                    setActionTx(tx)
-                  }
-                >
-
+                <div className="tx-menu" onClick={() => setActionTx(tx)}>
                   <i className="bx bx-dots-vertical-rounded"></i>
-
                 </div>
-
               </div>
-
             ))}
-
           </div>
-
         ))
       )}
 
       {/* EDIT MODAL */}
       {editTx && (
-
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setEditTx(null)
-          }
-        >
-
-          <div
-            className="modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-
-            <h3>
-              Edit Transaction
-            </h3>
+        <div className="modal-overlay" onClick={() => setEditTx(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Edit Transaction</h3>
 
             <input
               type="number"
@@ -572,93 +370,45 @@ const History = () => {
               }
             />
 
-            <button
-              onClick={handleUpdate}
-            >
-              Update
-            </button>
-
+            <button onClick={handleUpdate}>Update</button>
           </div>
-
         </div>
-
       )}
 
       {/* DETAILS MODAL */}
       {selectedTx && (
-
-        <div
-          className="modal-overlay"
-          onClick={() =>
-            setSelectedTx(null)
-          }
-        >
-
-          <div
-            className="modal"
-            onClick={(e) =>
-              e.stopPropagation()
-            }
-          >
-
-            <h3>
-              Transaction Details
-            </h3>
+        <div className="modal-overlay" onClick={() => setSelectedTx(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Transaction Details</h3>
 
             <p>
-              <b>Type:</b>
-              {" "}
-              {selectedTx.type}
+              <b>Type:</b> {selectedTx.type}
             </p>
 
             <p>
-              <b>Amount:</b>
-              {" "}
-              ₹{selectedTx.amount}
+              <b>Amount:</b> ₹{selectedTx.amount}
             </p>
 
             <p>
-              <b>Category:</b>
-              {" "}
-              {selectedTx.category}
+              <b>Category:</b> {selectedTx.category}
             </p>
 
             <p>
-              <b>Account:</b>
-              {" "}
-              {getAccountName(
-                selectedTx.accountId
-              )}
+              <b>Account:</b> {getAccountName(selectedTx.accountId)}
             </p>
 
             <p>
-              <b>Date:</b>
-              {" "}
-              {new Date(selectedTx.date)
-                .toLocaleString()}
+              <b>Date:</b> {new Date(selectedTx.date).toLocaleString()}
             </p>
 
             <p>
-              <b>Note:</b>
-              {" "}
-              {selectedTx.note ||
-                "No note"}
+              <b>Note:</b> {selectedTx.note || "No note"}
             </p>
 
-            <button
-              onClick={() =>
-                setSelectedTx(null)
-              }
-            >
-              Close
-            </button>
-
+            <button onClick={() => setSelectedTx(null)}>Close</button>
           </div>
-
         </div>
-
       )}
-
     </div>
   );
 };
