@@ -1,28 +1,36 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 const EditModalContext = createContext();
 
-export const EditModalProvider = ({ children }) => {
+export const EditModalProvider = ({
+  children,
+}) => {
 
-  const [actionTx, setActionTx] = useState(null);
+  // ACTIVE TRANSACTION
+  const [actionTx, setActionTx] =
+    useState(null);
 
-  const [handleDelete, setHandleDelete] =
-    useState(() => () => {});
+  // FUNCTION REFS
+  const handleDeleteRef = useRef(null);
 
-  const [setEditTx, setGlobalEditTx] =
-    useState(() => () => {});
+  const globalEditTxRef = useRef(null);
 
   return (
     <EditModalContext.Provider
       value={{
+
         actionTx,
         setActionTx,
 
-        handleDelete,
-        setHandleDelete,
+        handleDeleteRef,
 
-        setEditTx,
-        setGlobalEditTx,
+        globalEditTxRef,
+
       }}
     >
       {children}

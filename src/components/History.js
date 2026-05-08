@@ -6,9 +6,11 @@ import React, {
 } from "react";
 
 import { databases } from "../appwrite/config";
+
 import { Query } from "appwrite";
 
 import LoadingBar from "react-top-loading-bar";
+
 import { ThreeDots } from "react-loader-spinner";
 
 import { useEditModal } from "../context/EditModalContext";
@@ -16,27 +18,35 @@ import { useEditModal } from "../context/EditModalContext";
 const DATABASE_ID = "69e8d8b30039451280c9";
 
 const TRANSACTION_COLLECTION = "transactions";
+
 const ACCOUNT_COLLECTION = "accounts";
 
 const History = () => {
 
-  const [transactions, setTransactions] = useState([]);
-  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] =
+    useState([]);
 
-  const [search, setSearch] = useState("");
+  const [accounts, setAccounts] =
+    useState([]);
 
-  const [selectedTx, setSelectedTx] = useState(null);
+  const [search, setSearch] =
+    useState("");
 
-  const [editTx, setEditTx] = useState(null);
+  const [selectedTx, setSelectedTx] =
+    useState(null);
 
-  const [loading, setLoading] = useState(true);
+  const [editTx, setEditTx] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
 
   const loadingBarRef = useRef(null);
 
   const {
     setActionTx,
-    setHandleDelete,
-    setGlobalEditTx,
+    handleDeleteRef,
+    globalEditTxRef,
   } = useEditModal();
 
   // 🔥 FETCH DATA
@@ -78,7 +88,9 @@ const History = () => {
   };
 
   useEffect(() => {
+
     fetchData();
+
   }, []);
 
   // 🏦 ACCOUNT NAME
@@ -88,7 +100,9 @@ const History = () => {
       (acc) => acc.$id === accountId
     );
 
-    return account ? account.name : "Unknown";
+    return account
+      ? account.name
+      : "Unknown";
   };
 
   // 🔍 SEARCH
@@ -97,13 +111,18 @@ const History = () => {
     const keyword = search.toLowerCase();
 
     return (
+
       (tx.category || "")
         .toLowerCase()
-        .includes(keyword) ||
+        .includes(keyword)
+
+      ||
 
       (tx.note || "")
         .toLowerCase()
-        .includes(keyword) ||
+        .includes(keyword)
+
+      ||
 
       getAccountName(tx.accountId)
         .toLowerCase()
@@ -111,7 +130,7 @@ const History = () => {
     );
   });
 
-  // 📅 GROUP
+  // 📅 GROUP BY MONTH
   const grouped = filtered.reduce((acc, tx) => {
 
     const month = new Date(tx.date)
@@ -121,6 +140,7 @@ const History = () => {
       });
 
     if (!acc[month]) {
+
       acc[month] = [];
     }
 
@@ -135,71 +155,93 @@ const History = () => {
 
     return items
       .filter((tx) => tx.type === "withdraw")
-      .reduce((sum, tx) => sum + tx.amount, 0);
+      .reduce(
+        (sum, tx) =>
+          sum + Number(tx.amount),
+        0
+      );
   };
 
   // 🗑 DELETE
-  const handleDelete = useCallback(async (tx) => {
+  const handleDelete = useCallback(
 
-    try {
+    async (tx) => {
 
-      const account = accounts.find(
-        (a) => a.$id === tx.accountId
-      );
+      try {
 
-      if (!account) return;
+        const account = accounts.find(
+          (a) => a.$id === tx.accountId
+        );
 
-      let newBalance = account.balance;
+        if (!account) return;
 
-      // RESTORE BALANCE
-      if (tx.type === "withdraw") {
+        // SAFE NUMBER
+        let newBalance =
+          Number(account.balance || 0);
 
-        newBalance += tx.amount;
+        // RESTORE OLD EFFECT
+        if (tx.type === "withdraw") {
 
-      } else {
+          newBalance =
+            Number(newBalance) +
+            Number(tx.amount);
 
-        newBalance -= tx.amount;
-      }
+        } else {
 
-      // UPDATE ACCOUNT
-      await databases.updateDocument(
-        DATABASE_ID,
-        ACCOUNT_COLLECTION,
-        tx.accountId,
-        {
-          balance: newBalance,
+          newBalance =
+            Number(newBalance) -
+            Number(tx.amount);
         }
-      );
 
-      // DELETE TX
-      await databases.deleteDocument(
-        DATABASE_ID,
-        TRANSACTION_COLLECTION,
-        tx.$id
-      );
+        // PREVENT INVALID VALUE
+        if (
+          isNaN(newBalance) ||
+          newBalance < 0
+        ) {
+          newBalance = 0;
+        }
 
-      // UI UPDATE
-      setTransactions((prev) =>
-        prev.filter((t) => t.$id !== tx.$id)
-      );
+        // UPDATE ACCOUNT
+        await databases.updateDocument(
+          DATABASE_ID,
+          ACCOUNT_COLLECTION,
+          tx.accountId,
+          {
+            balance: Number(newBalance),
+          }
+        );
 
-      setAccounts((prev) =>
-        prev.map((acc) =>
-          acc.$id === tx.accountId
-            ? {
-                ...acc,
-                balance: newBalance,
-              }
-            : acc
-        )
-      );
+        // DELETE TX
+        await databases.deleteDocument(
+          DATABASE_ID,
+          TRANSACTION_COLLECTION,
+          tx.$id
+        );
 
-    } catch (err) {
+        // UI UPDATE
+        setTransactions((prev) =>
+          prev.filter((t) => t.$id !== tx.$id)
+        );
 
-      console.log(err);
-    }
+        setAccounts((prev) =>
+          prev.map((acc) =>
+            acc.$id === tx.accountId
+              ? {
+                  ...acc,
+                  balance: Number(newBalance),
+                }
+              : acc
+          )
+        );
 
-  }, [accounts]);
+      } catch (err) {
+
+        console.log(err);
+      }
+    },
+
+    [accounts]
+  );
 
   // ✏️ UPDATE
   const handleUpdate = async () => {
@@ -216,26 +258,44 @@ const History = () => {
 
       if (!oldTx || !account) return;
 
-      let balance = account.balance;
+      // SAFE NUMBER
+      let balance =
+        Number(account.balance || 0);
 
       // REMOVE OLD EFFECT
       if (oldTx.type === "withdraw") {
 
-        balance += oldTx.amount;
+        balance =
+          Number(balance) +
+          Number(oldTx.amount);
 
       } else {
 
-        balance -= oldTx.amount;
+        balance =
+          Number(balance) -
+          Number(oldTx.amount);
       }
 
       // APPLY NEW EFFECT
       if (editTx.type === "withdraw") {
 
-        balance -= Number(editTx.amount);
+        balance =
+          Number(balance) -
+          Number(editTx.amount);
 
       } else {
 
-        balance += Number(editTx.amount);
+        balance =
+          Number(balance) +
+          Number(editTx.amount);
+      }
+
+      // PREVENT INVALID VALUE
+      if (
+        isNaN(balance) ||
+        balance < 0
+      ) {
+        balance = 0;
       }
 
       // UPDATE TX
@@ -255,7 +315,7 @@ const History = () => {
         ACCOUNT_COLLECTION,
         editTx.accountId,
         {
-          balance,
+          balance: Number(balance),
         }
       );
 
@@ -276,7 +336,7 @@ const History = () => {
           acc.$id === editTx.accountId
             ? {
                 ...acc,
-                balance,
+                balance: Number(balance),
               }
             : acc
         )
@@ -293,20 +353,19 @@ const History = () => {
   // ✅ REGISTER GLOBAL ACTIONS
   useEffect(() => {
 
-    setHandleDelete(() => handleDelete);
+    handleDeleteRef.current =
+      handleDelete;
 
-    setGlobalEditTx(() => setEditTx);
+    globalEditTxRef.current =
+      setEditTx;
 
-  }, [
-    handleDelete,
-    setHandleDelete,
-    setGlobalEditTx,
-  ]);
+  }, [handleDelete]);
 
   return (
+
     <div className="history-container">
 
-      {/* TOP BAR */}
+      {/* TOP LOADING */}
       <LoadingBar
         color="#6366f1"
         ref={loadingBarRef}
@@ -316,7 +375,9 @@ const History = () => {
       {/* HEADER */}
       <div className="history-header">
 
-        <h2>Transaction History</h2>
+        <h2>
+          Transaction History
+        </h2>
 
         <div className="search-bar">
 
@@ -333,7 +394,7 @@ const History = () => {
 
       </div>
 
-      {/* LOADER */}
+      {/* LOADING */}
       {loading ? (
 
         <div className="loader-center">
@@ -361,7 +422,11 @@ const History = () => {
               <span>{month}</span>
 
               <span className="month-total">
-                ₹{getMonthlyExpense(grouped[month])}
+
+                ₹{getMonthlyExpense(
+                  grouped[month]
+                )}
+
               </span>
 
             </div>
@@ -377,34 +442,47 @@ const History = () => {
                 {/* MAIN */}
                 <div
                   className="history-main"
-                  onClick={() => setSelectedTx(tx)}
+                  onClick={() =>
+                    setSelectedTx(tx)
+                  }
                 >
 
                   <div className="history-content">
 
                     {/* ICON */}
                     <div className="history-icon">
+
                       {tx.type === "deposit"
                         ? "⬆️"
                         : "⬇️"}
+
                     </div>
 
                     {/* INFO */}
                     <div className="history-info">
 
                       <p className="tx-category">
-                        {tx.category || "Transaction"}
+
+                        {tx.category ||
+                          "Transaction"}
+
                       </p>
 
                       <div className="history-spans">
 
                         <span className="tx-account">
-                          {getAccountName(tx.accountId)}
+
+                          {getAccountName(
+                            tx.accountId
+                          )}
+
                         </span>
 
                         <span className="tx-date">
+
                           {new Date(tx.date)
                             .toLocaleString()}
+
                         </span>
 
                       </div>
@@ -417,9 +495,13 @@ const History = () => {
                   <div
                     className={`history-amount ${tx.type}`}
                   >
+
                     {tx.type === "deposit"
                       ? "+"
-                      : "-"} ₹{tx.amount}
+                      : "-"}
+
+                    ₹{tx.amount}
+
                   </div>
 
                 </div>
@@ -427,9 +509,13 @@ const History = () => {
                 {/* MENU */}
                 <div
                   className="tx-menu"
-                  onClick={() => setActionTx(tx)}
+                  onClick={() =>
+                    setActionTx(tx)
+                  }
                 >
+
                   <i className="bx bx-dots-vertical-rounded"></i>
+
                 </div>
 
               </div>
@@ -439,7 +525,6 @@ const History = () => {
           </div>
 
         ))
-
       )}
 
       {/* EDIT MODAL */}
@@ -447,7 +532,9 @@ const History = () => {
 
         <div
           className="modal-overlay"
-          onClick={() => setEditTx(null)}
+          onClick={() =>
+            setEditTx(null)
+          }
         >
 
           <div
@@ -457,11 +544,14 @@ const History = () => {
             }
           >
 
-            <h3>Edit Transaction</h3>
+            <h3>
+              Edit Transaction
+            </h3>
 
             <input
               type="number"
               value={editTx.amount}
+              placeholder="Amount"
               onChange={(e) =>
                 setEditTx({
                   ...editTx,
@@ -473,6 +563,7 @@ const History = () => {
             <input
               type="text"
               value={editTx.note || ""}
+              placeholder="Note"
               onChange={(e) =>
                 setEditTx({
                   ...editTx,
@@ -481,7 +572,9 @@ const History = () => {
               }
             />
 
-            <button onClick={handleUpdate}>
+            <button
+              onClick={handleUpdate}
+            >
               Update
             </button>
 
@@ -508,37 +601,48 @@ const History = () => {
             }
           >
 
-            <h3>Transaction Details</h3>
+            <h3>
+              Transaction Details
+            </h3>
 
             <p>
-              <b>Type:</b> {selectedTx.type}
+              <b>Type:</b>
+              {" "}
+              {selectedTx.type}
             </p>
 
             <p>
-              <b>Amount:</b> ₹{selectedTx.amount}
+              <b>Amount:</b>
+              {" "}
+              ₹{selectedTx.amount}
             </p>
 
             <p>
-              <b>Category:</b> {selectedTx.category}
+              <b>Category:</b>
+              {" "}
+              {selectedTx.category}
             </p>
 
             <p>
-              <b>Account:</b>{" "}
+              <b>Account:</b>
+              {" "}
               {getAccountName(
                 selectedTx.accountId
               )}
             </p>
 
             <p>
-              <b>Date:</b>{" "}
-              {new Date(
-                selectedTx.date
-              ).toLocaleString()}
+              <b>Date:</b>
+              {" "}
+              {new Date(selectedTx.date)
+                .toLocaleString()}
             </p>
 
             <p>
-              <b>Note:</b>{" "}
-              {selectedTx.note || "No note"}
+              <b>Note:</b>
+              {" "}
+              {selectedTx.note ||
+                "No note"}
             </p>
 
             <button
