@@ -101,7 +101,7 @@ const Categories = () => {
           type="submit"
           disabled={loading}
           whileTap={{ scale: 0.95 }}
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.01 }}
         >
           {loading ? "Adding..." : "Add Category"}
         </motion.button>
@@ -118,7 +118,7 @@ const Categories = () => {
               className="category-item"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.01 }}
             >
               <div>
                 <h3>{cat.name}</h3>

@@ -235,6 +235,7 @@
 /* ================= Setting UI/UX==================*/
 .settings-container {
   min-height: 100vh;
+  margin-bottom: 4rem;
   padding: 20px;
   background: linear-gradient(135deg, #eef2ff, #f8fafc);
   display: flex;
@@ -256,15 +257,35 @@
 }
 
 .settings-avatar {
-  font-size: 40px;
+  font-size: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid #0077ff;
   color: #6366f1;
   margin-bottom: 10px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+.profile-card h3 {
+  font-size: 1.1rem;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.profile-card p {
+  font-size: 1rem;
+  opacity: 0.8;
+  font-weight: 500;
 }
 
 /* Section title */
 .section-title {
   margin-bottom: 15px;
   font-size: 18px;
+  opacity: 0.8;
   font-weight: 600;
 }
 
@@ -287,16 +308,28 @@
   justify-content: center;
   gap: 6px;
   transition: 0.2s;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* HOVER */
 .theme-btn:hover {
   background: #eef2ff;
 }
 
+/* ACTIVE BUTTON */
 .theme-btn.active {
-  background: #6366f1;
+  background: #6366f1 !important;
   color: white;
   border: none;
+}
+
+/* KEEP ACTIVE COLOR ON CLICK */
+.theme-btn.active:focus,
+.theme-btn.active:active,
+.theme-btn.active:visited {
+  background: #6366f1 !important;
+  color: white;
 }
 
 /* Info text */
@@ -415,6 +448,15 @@
   cursor: pointer;
 }
 
+.account-card button:active,
+.account-card button:visited,
+.account-card button:focus {
+  background-color: #6366f1 !important;
+  outline: none;
+  -webkit-tap-highlight-color: #6366f1; /* <– THIS is the true slayer */
+  -webkit-tap-highlight-color: #6366f1;
+}
+
 .account-card button:hover {
   background: #4f46e5;
 }
@@ -426,6 +468,8 @@
 /* Text */
 .center-text {
   text-align: center;
+  color: #0077ff;
+  font-size: 0.9rem;
 }
 
 .transaction-container {
@@ -497,6 +541,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.nav-logo:active,
+.nav-logo:visited,
+.nav-logo:focus {
+  background-color: transparent !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* <– THIS is the true slayer */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .transaction-card button:hover {
@@ -946,6 +999,7 @@
 
 .m-navbar {
   position: fixed;
+  z-index: 10001;
   bottom: 0;
   margin: auto;
   width: 100%;
@@ -1052,6 +1106,9 @@
 
 .category-card h2 {
   margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 0.9;
 }
 
 /* INPUTS */
@@ -1095,6 +1152,16 @@
   padding: 15px;
   border-radius: 12px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.category-item h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.category-item span {
+  text-transform: capitalize;
 }
 
 /* TYPE BADGE */
