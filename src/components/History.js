@@ -1,11 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
+
 import { databases } from "../appwrite/config";
 import { Query } from "appwrite";
+
 import LoadingBar from "react-top-loading-bar";
 import { ThreeDots } from "react-loader-spinner";
+
 import { useEditModal } from "../context/EditModalContext";
 
 const DATABASE_ID = "69e8d8b30039451280c9";
+
 const TRANSACTION_COLLECTION = "transactions";
 const ACCOUNT_COLLECTION = "accounts";
 
@@ -15,7 +24,9 @@ const History = () => {
   const [accounts, setAccounts] = useState([]);
 
   const [search, setSearch] = useState("");
+
   const [selectedTx, setSelectedTx] = useState(null);
+
   const [editTx, setEditTx] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -30,6 +41,7 @@ const History = () => {
 
   // 🔥 FETCH DATA
   const fetchData = async () => {
+
     try {
 
       setLoading(true);
@@ -50,6 +62,7 @@ const History = () => {
       );
 
       setTransactions(txRes.documents);
+
       setAccounts(accRes.documents);
 
     } catch (err) {
@@ -126,7 +139,7 @@ const History = () => {
   };
 
   // 🗑 DELETE
-  const handleDelete = async (tx) => {
+  const handleDelete = useCallback(async (tx) => {
 
     try {
 
@@ -140,8 +153,11 @@ const History = () => {
 
       // RESTORE BALANCE
       if (tx.type === "withdraw") {
+
         newBalance += tx.amount;
+
       } else {
+
         newBalance -= tx.amount;
       }
 
@@ -182,7 +198,8 @@ const History = () => {
 
       console.log(err);
     }
-  };
+
+  }, [accounts]);
 
   // ✏️ UPDATE
   const handleUpdate = async () => {
@@ -203,15 +220,21 @@ const History = () => {
 
       // REMOVE OLD EFFECT
       if (oldTx.type === "withdraw") {
+
         balance += oldTx.amount;
+
       } else {
+
         balance -= oldTx.amount;
       }
 
       // APPLY NEW EFFECT
       if (editTx.type === "withdraw") {
+
         balance -= Number(editTx.amount);
+
       } else {
+
         balance += Number(editTx.amount);
       }
 
@@ -274,7 +297,11 @@ const History = () => {
 
     setGlobalEditTx(() => setEditTx);
 
-  }, [transactions, accounts]);
+  }, [
+    handleDelete,
+    setHandleDelete,
+    setGlobalEditTx,
+  ]);
 
   return (
     <div className="history-container">
@@ -339,7 +366,7 @@ const History = () => {
 
             </div>
 
-            {/* TX */}
+            {/* TRANSACTIONS */}
             {grouped[month].map((tx) => (
 
               <div
@@ -347,7 +374,7 @@ const History = () => {
                 className="history-item"
               >
 
-                {/* LEFT */}
+                {/* MAIN */}
                 <div
                   className="history-main"
                   onClick={() => setSelectedTx(tx)}
@@ -392,13 +419,12 @@ const History = () => {
                   >
                     {tx.type === "deposit"
                       ? "+"
-                      : "-"}{" "}
-                    ₹{tx.amount}
+                      : "-"} ₹{tx.amount}
                   </div>
 
                 </div>
 
-                {/* DOT MENU */}
+                {/* MENU */}
                 <div
                   className="tx-menu"
                   onClick={() => setActionTx(tx)}
@@ -485,18 +511,15 @@ const History = () => {
             <h3>Transaction Details</h3>
 
             <p>
-              <b>Type:</b>{" "}
-              {selectedTx.type}
+              <b>Type:</b> {selectedTx.type}
             </p>
 
             <p>
-              <b>Amount:</b> ₹
-              {selectedTx.amount}
+              <b>Amount:</b> ₹{selectedTx.amount}
             </p>
 
             <p>
-              <b>Category:</b>{" "}
-              {selectedTx.category}
+              <b>Category:</b> {selectedTx.category}
             </p>
 
             <p>
@@ -515,8 +538,7 @@ const History = () => {
 
             <p>
               <b>Note:</b>{" "}
-              {selectedTx.note ||
-                "No note"}
+              {selectedTx.note || "No note"}
             </p>
 
             <button
