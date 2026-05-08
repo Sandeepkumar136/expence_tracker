@@ -377,31 +377,31 @@ const History = () => {
 
       {/* DETAILS MODAL */}
       {selectedTx && (
-        <div className="modal-overlay" onClick={() => setSelectedTx(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay-details" onClick={() => setSelectedTx(null)}>
+          <div className="modal-details" onClick={(e) => e.stopPropagation()}>
             <h3>Transaction Details</h3>
 
-            <p>
+            <p className="modal-text-contain">
               <b>Type:</b> {selectedTx.type}
             </p>
 
-            <p>
+            <p className="modal-text-contain">
               <b>Amount:</b> ₹{selectedTx.amount}
             </p>
 
-            <p>
+            <p className="modal-text-contain">
               <b>Category:</b> {selectedTx.category}
             </p>
 
-            <p>
+            <p className="modal-text-contain">
               <b>Account:</b> {getAccountName(selectedTx.accountId)}
             </p>
 
-            <p>
+            <p className="modal-text-contain">
               <b>Date:</b> {new Date(selectedTx.date).toLocaleString()}
             </p>
 
-            <p>
+            <p className="modal-text-contain note">
               <b>Note:</b> {selectedTx.note || "No note"}
             </p>
 
